@@ -1,8 +1,9 @@
-# Python bytecode
+# Python bytecode and caches
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
 *.pyd
+.pytest_cache/
 
 # Virtual environments
 .venv/
@@ -11,7 +12,13 @@ env/
 
 # Secrets and local configuration
 .env
+.env.*
+!.env.example
 
-# Test and editor files
-.pytest_cache/
+# Local SQLite database files
+database.db
+*.sqlite
+*.sqlite3
+
+# Editor files
 .vscode/

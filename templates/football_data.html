@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Football Data API | Football Performance Predictor</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="app-page">
+  <nav class="navbar navbar-expand-lg navbar-dark site-nav"><div class="container"><a class="navbar-brand fw-bold" href="{{ url_for('home') }}"><span class="brand-mark">90</span> FOOTBALL<span class="brand-light">/LAB</span></a><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="mainNav"><div class="navbar-nav ms-auto align-items-lg-center gap-lg-3"><a class="nav-link" href="{{ url_for('home') }}">Home</a><a class="nav-link" href="{{ url_for('prediction') }}">Prediction</a><a class="nav-link active" href="{{ url_for('football_data') }}">Football data</a>{% include 'auth_links.html' %}</div></div></div></nav>
+  <main class="container content-wrap data-wrap">
+    <div class="page-heading"><div class="eyebrow"><span class="eyebrow-line"></span> LIVE DATA CONNECTION</div><h1>Football data, <span>from the source.</span></h1><p>This page requests available competition data from football-data.org through the Flask backend.</p></div>
+    {% if error %}
+      <div class="api-message" role="alert"><div class="api-message-icon">!</div><div><h2>Data is not available yet</h2><p>{{ error }}</p><ol><li>Get a token from <a href="https://www.football-data.org/client/register" target="_blank" rel="noopener noreferrer">football-data.org</a>.</li><li>Put it after <strong>API_TOKEN=</strong> in your local <strong>.env</strong> file.</li><li>Stop and restart Flask, then refresh this page.</li></ol></div></div>
+    {% elif competitions %}
+      <div class="data-summary"><span class="status-dot"></span> Successfully loaded {{ competitions|length }} competitions <span class="api-source">football-data.org API · /v4/competitions</span></div>
+      <div class="row g-3">
+        {% for competition in competitions %}
+        <div class="col-md-6 col-lg-4"><article class="competition-card"><div class="competition-code">{{ competition.code or 'FOOTBALL' }}</div><h2>{{ competition.name }}</h2><p>{{ competition.area.name if competition.area else 'International competition' }}</p>{% if competition.currentSeason %}<small>Season {{ competition.currentSeason.startDate }}{% if competition.currentSeason.endDate %} — {{ competition.currentSeason.endDate }}{% endif %}</small>{% endif %}</article></div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="api-message"><div class="api-message-icon">i</div><div><h2>No competitions returned</h2><p>The request succeeded, but the API did not return competition records for this token.</p></div></div>
+    {% endif %}
+    <p class="back-link"><a href="{{ url_for('home') }}">← Back to home</a></p>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
